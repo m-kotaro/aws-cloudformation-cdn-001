@@ -5,7 +5,7 @@ Parameters:
     Type: "String"
     Description: "This is custom-parameter."
     Default: "hogehogehooge"
-  Domainname:
+  DomainName:
     Type: "String"
     Description: "This is domain name for cloudfront distributoin."
   AcmCertificateArn:
@@ -50,7 +50,7 @@ Resources:
       DistributionConfig:
         Comment: !Sub "cloudfront-${CustomParameter001}"
         Aliases:
-          - !Ref Domainname
+          - !Ref DomainName
         DefaultRootObject: "index.html"
         DefaultCacheBehavior: 
           AllowedMethods:
@@ -111,7 +111,7 @@ Resources:
   DnsRecord:
     Type: "AWS::Route53::RecordSet"
     Properties:
-      Name: !Ref Domainname
+      Name: !Ref DomainName
       Type: A
       HostedZoneId: !Ref HostedZoneId
       AliasTarget:
