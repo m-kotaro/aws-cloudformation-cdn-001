@@ -1,0 +1,27 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Parameters:
+  CustomParameter001:
+    Type: "String"
+    Description: "This is custom-parameter."
+  DomainName:
+    Type: "String"
+
+Resources:
+  # ------------------------------------------------------------#
+  # Route53::HostedZone
+  # ------------------------------------------------------------#
+  HostedZone:
+    Type: "AWS::Route53::HostedZone"
+    Properties:
+      Name: !Ref DomainName
+
+Outputs:
+  HostedZoneId:
+    Value: !GetAtt HostedZone.Id
+    Export:
+      Name: !Sub "hostzoneid-${CustomParameter001}"
+  HostedZoneName:
+    Value: !Ref DomainName
+    Export:
+      Name: !Sub "hostzonename-${CustomParameter001}"

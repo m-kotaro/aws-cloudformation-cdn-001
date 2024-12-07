@@ -1,0 +1,27 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Parameters:
+  CustomParameter001:
+    Type: "String"
+    Description: "This is custom-parameter."
+
+Resources:
+  # ------------------------------------------------------------#
+  # CertificateManager::Certificate
+  # ------------------------------------------------------------#
+  CertificateManager:
+    Type: "AWS::CertificateManager::Certificate"
+    Properties:
+      DomainName: { "Fn::ImportValue": !Sub "hostzonename-${CustomParameter001}" }
+      DomainValidationOptions:
+        - DomainName: { "Fn::ImportValue": !Sub "hostzonename-${CustomParameter001}" }
+          HostedZoneId: { "Fn::ImportValue": !Sub "hostzoneid-${CustomParameter001}" }
+      SubjectAlternativeNames:
+        - !Join [ ".", [ "*", { "Fn::ImportValue": !Sub "hostzonename-${CustomParameter001}" }] ]
+      ValidationMethod: "DNS"
+
+Outputs:
+  CertificateManager:
+    Value: !Ref CertificateManager
+    Export:
+      Name: !Sub "acm-${CustomParameter001}"

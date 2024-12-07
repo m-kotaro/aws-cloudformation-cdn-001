@@ -4,14 +4,6 @@ Parameters:
   CustomParameter001:
     Type: "String"
     Description: "This is custom-parameter."
-    Default: "hogehogehooge"
-  DomainName:
-    Type: "String"
-    Description: "This is domain name for cloudfront distributoin."
-  AcmCertificateArn:
-    Type: "String"
-  HostedZoneId:
-    Type: "String"
 
 Resources:
   # ------------------------------------------------------------#
@@ -50,7 +42,7 @@ Resources:
       DistributionConfig:
         Comment: !Sub "cloudfront-${CustomParameter001}"
         Aliases:
-          - !Ref DomainName
+          - { "Fn::ImportValue": !Sub "hostzonename-${CustomParameter001}" }
         DefaultRootObject: "index.html"
         DefaultCacheBehavior: 
           AllowedMethods:
@@ -71,7 +63,7 @@ Resources:
               OriginAccessIdentity: ""
         PriceClass: PriceClass_All
         ViewerCertificate:
-          AcmCertificateArn: !Ref AcmCertificateArn
+          AcmCertificateArn: { "Fn::ImportValue": !Sub "acm-${CustomParameter001}" }
           SslSupportMethod: sni-only
 
   # ------------------------------------------------------------#
@@ -111,9 +103,9 @@ Resources:
   DnsRecord:
     Type: "AWS::Route53::RecordSet"
     Properties:
-      Name: !Ref DomainName
+      Name: { "Fn::ImportValue": !Sub "hostzonename-${CustomParameter001}" }
       Type: A
-      HostedZoneId: !Ref HostedZoneId
+      HostedZoneId: { "Fn::ImportValue": !Sub "hostzoneid-${CustomParameter001}" }
       AliasTarget:
         DNSName: !GetAtt CloudFrontDistribution.DomainName
-        HostedZoneId: Z2FDTNDATAQYW2 # this is AWS-specific constant value
+        HostedZoneId: Z2FDTNDATAQYW2 #  This is AWS-specific constant value
